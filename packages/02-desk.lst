@@ -1,11 +1,12 @@
 audacious
 keepass2
-#command line keepass
-kpcli
-filezilla
+libav-tools
 vlc
+mpv
+terminator
 dia
 inkscape
 gimp
 mupdf
 xpdf
+xclip

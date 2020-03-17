@@ -18,6 +18,16 @@
 *.zip
 *.rar
 
+# patch/diff files
+*.diff
+*.patch
+
 # Proyect files
 *.komodoproject
+*.iml
+.idea
+nb-configuration.xml
+
+# Ctags file
+.tags
 

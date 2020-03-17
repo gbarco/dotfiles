@@ -1,16 +1,17 @@
+build-essential
 make
-gcc
-manpages-dev
-manpages-posix
-manpages-posix-dev
-git-core
-git-gui
-git-doc
+patch
+# Version control
+git
 git-man
-github-backup
-gitk
-ltrace
-strace
-poedit
-discount
-yui-compressor
+# Formatting
+jq
+libxml2-utils
+colordiff
+# basic library headers
+libssl-dev
+libgd-dev
+libxml2-dev
+libxslt1-dev
+# Misc
+entr

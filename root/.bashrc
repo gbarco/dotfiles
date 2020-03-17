@@ -2,14 +2,26 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+# ============================================================================
 # set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-	PATH="$HOME/bin:$PATH"
+# ============================================================================
+if [ -d "${HOME}/bin" ] ; then
+	PATH="${HOME}/bin:${PATH}"
 fi
 
+# ============================================================================
 # If not running interactively, don't do anything
-[ -z "$PS1" ] && return
+# ============================================================================
+[ -z "${PS1}" ] && return
 
+# ============================================================================
+# Pre hook
+# ============================================================================
+if [ -f ~/.bash_pre ]; then
+	. ~/.bash_pre
+fi
+
+# ============================================================================
 export EDITOR=/usr/bin/vim
 export PAGER="less -MIR"
 
@@ -39,21 +51,25 @@ if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
 	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
 	# a case would tend to support setf rather than setaf.)
 	C_RESET='\[\e[0m\]'
-	C_PATH='\[\e[1;35m\]'
-	C_HOST='\[\e[1;34m\]'
 
-	if test "$UID" -eq 0; then
+	: ${C_HOST:='\[\e[1;34m\]'}
+	: ${C_PATH:='\[\e[1;35m\]'}
+
+	if test "${UID}" -eq 0; then
 		C_ROOT='\[\e[1;31m\]'
-		PS1="$C_ROOT[\u at $C_HOST\h $C_PATH\w$C_ROOT]\n#$C_RESET "
+		PS1="${C_ROOT}[\u at ${C_HOST}\h ${C_PATH}\w${C_ROOT}]\n#${C_RESET} "
 	else
-		C_LINE='\[\e[1;33m\]'
-		PS1="$C_LINE[\u at $C_HOST\h $C_PATH\w$C_LINE]\n\$$C_RESET "
+		: ${C_LINE:='\[\e[1;33m\]'}
+		PS1="${C_LINE}[\u at ${C_HOST}\h ${C_PATH}\w${C_LINE}]\n\$${C_RESET} "
 	fi
+
+	unset C_LINE C_ROOT C_RESET C_HOST C_PATH
+
 fi
 
 # If this is an xterm set the title
-if [[ "$TERM" == 'xterm' ]]; then
-    PS1="\[\e]0;\u@\h: \w\a\]$PS1"
+if [[ "${TERM}" == 'xterm' ]]; then
+	PS1="\[\e]0;\u@\h: \w\a\]${PS1}"
 fi
 
 # enable color support of ls and also add handy aliases
@@ -91,48 +107,20 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 
 # ============================================================================
-# Vagrant
-# ============================================================================
-VAGRANT_PATH=/opt/vagrant/bin
-if [ -d $VAGRANT_PATH ]; then
-	PATH=$PATH:$VAGRANT_PATH
-fi
-
-# ============================================================================
-# Perlbrew
-# ============================================================================
-if [ -d "/opt/perlbrew" ]; then
-	export PERLBREW_ROOT="/opt/perlbrew"
-	if [ -f $PERLBREW_ROOT/etc/bashrc ]; then
-		. $PERLBREW_ROOT/etc/bashrc
-	fi
-fi
-
-if [ -d "$HOME/perl5/perlbrew" ]; then
-	export PERLBREW_ROOT="$HOME/perl5/perlbrew"
-	if [ -f $PERLBREW_ROOT/etc/bashrc ]; then
-		. $PERLBREW_ROOT/etc/bashrc
-	fi
-fi
-
-# ============================================================================
 # MySQL
 # ============================================================================
-export MYSQL_PS1="\u@$HOST [\d] > "
+export MYSQL_PS1="[\u@\h] \d> "
 
 # ============================================================================
-# Maven
+# Less color config
 # ============================================================================
-if [ -f ~/bin/mvn-color ]; then
-	. ~/bin/mvn-color
-fi
+. ~/.lessrc
 
 # ============================================================================
-# Load environment
+# Post hook
 # ============================================================================
-# See: http://cweiske.de/tagebuch/carry-git-settings.htm
-if [ -f ~/.bash_environment ]; then
-	. ~/.bash_environment
+if [ -f ~/.bash_post ]; then
+	. ~/.bash_post
 fi
 
 # ============================================================================

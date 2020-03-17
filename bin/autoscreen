@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Auto-screen invocation. see: http://taint.org/wk/RemoteLoginAutoScreen
+# if we're coming from a remote SSH connection, in an interactive session
+# then automatically put us into a screen(1) session.   Only try once
+# -- if $SCREEN_STARTED is set, don't try it again, to avoid looping
+# if screen fails for some reason.
+if [ "${PS1}" != "" -a "${SCREEN_STARTED:-x}" = x -a "${SSH_TTY:-x}" != x ]
+then
+	export SCREEN_STARTED=1
+	rc_file="${1}"
+	if [ -n "${rc_file}" -a -f "${rc_file}" ]; then
+		exec screen -c "${rc_file}" -d -R
+	else
+		exec screen -d -R
+	fi
+	# normally, execution of this rc script ends here...
+	echo "Screen failed! continuing with normal bash startup"
+fi
+
